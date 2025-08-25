@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://anas2001ks:rinshad3657@cluster0.7v2nsm9.mongodb.net/ChatApp
+  application:
+    name: room-service
+
+server:
+  port: 8082
