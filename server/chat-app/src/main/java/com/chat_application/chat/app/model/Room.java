@@ -1,27 +1,30 @@
 package com.chat_application.chat.app.model;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
-
-@Document(collection = "rooms")
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Document("rooms")
 public class Room {
     @Id
     private String id;
-
+    @Indexed
     private String name;
-    private String type; // public/private
-    private List<String> members; // userIds
+    // "PUBLIC" or "PRIVATE" for clarity
+    private String type;
+    // userId list
+    @Builder.Default
+    private List<String> members = new ArrayList<>();
     private String createdBy;
     private Instant createdAt;
+    private Instant updatedAt;
 }
+//id
+//discription - optional
+//name
+//privacy
+//category 4 types
+//count

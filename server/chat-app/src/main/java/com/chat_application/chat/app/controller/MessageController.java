@@ -1,28 +1,38 @@
 package com.chat_application.chat.app.controller;
 
-import com.chat_application.chat.app.model.Message;
+import com.chat_application.chat.app.dto.SendMessageRequest;
 import com.chat_application.chat.app.service.MessageService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/rooms/{roomId}/messages")
+@RequiredArgsConstructor
 public class MessageController {
-    private final MessageService messageService;
+    private final MessageService service;
 
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
-
+    // GET /rooms/{roomId}/messages?userId=...&page=1&limit=20
     @GetMapping
-    public List<Message> getMessages(@PathVariable String roomId) {
-        return messageService.getMessages(roomId);
+    public ResponseEntity<Map<String, Object>> list(@PathVariable String roomId,
+                                                    @RequestParam String userId,
+                                                    @RequestParam(defaultValue
+                                                            = "1") int page,
+                                                    @RequestParam(defaultValue
+                                                            = "20") int limit) {
+        var res = service.list(userId, roomId, page, limit);
+        return ResponseEntity.ok(res);
     }
 
+    // POST /rooms/{roomId}/messages?userId=...
     @PostMapping
-    public Message sendMessage(@PathVariable String roomId, @RequestBody Message message) {
-        message.setRoomId(roomId);
-        return messageService.sendMessage(message);
+    public ResponseEntity<?> send(@PathVariable String roomId,
+                                  @RequestParam String userId,
+                                  @Valid @RequestBody SendMessageRequest req) {
+        var res = service.send(userId, roomId, req);
+        return ResponseEntity.status(201).body(res);
     }
 }
